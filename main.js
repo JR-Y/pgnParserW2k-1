@@ -9,24 +9,28 @@ parser.on('warning', (pgn, warning) => {
 })
 client.connect(60002, "192.168.4.1");
 
-let dataJson=[];
+let dataJson = [];
 
 client.on('data', (data) => {
     try {
         console.log("-----MESSAGE-----")
         let str = uint8ToString(data);
         let pgn = parsePgnPgns(str);
-        console.log("PGN--" + pgn +"--")
+        console.log("PGN--" + str + "--")
+        console.log("parsedPGN--" + pgn + "--")
         try {
             let json = parser.parseString(reFormatPgn(pgn));
-            if(json){
+            if (json) {
                 console.log(JSON.stringify(json))
-                json["originalPgn"] = pgn;
+                json["parsedPgn"] = pgn;
                 dataJson.push(json)
+            } else {
+                console.error(pgn)
+                dataJson.push({ "parsedPgn": pgn, "originalPgn": str })
             }
         } catch (error) {
             console.error(pgn)
-            dataJson.push({"originalPgn":pgn})
+            dataJson.push({ "parsedPgn": pgn, "originalPgn": str })
         }
     } catch (error) {
         console.log(error)
@@ -88,9 +92,9 @@ function reFormatPgn(pgn) {
     return null;
 }
 
-setInterval(()=>{
-    fs.writeFile("test.json",JSON.stringify(dataJson),(err)=>{
-        if(err){console.log(err)}
-        if(!err){console.log("saved")}
+setInterval(() => {
+    fs.writeFile("test.json", JSON.stringify(dataJson), (err) => {
+        if (err) { console.log(err) }
+        if (!err) { console.log("saved") }
     });
-},3000);
+}, 3000);
