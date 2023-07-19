@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@canboat/canboatjs": "^1.6.10",
+    "@canboat/canboatjs": "^1.28.1",
     "text-encoding": "^0.7.0"
   }
 }
